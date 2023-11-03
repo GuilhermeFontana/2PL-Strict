@@ -23,14 +23,14 @@
         "transaction": 2
       },
       {
-        "type": "C",
-        "data": null,
-        "transaction": 2
-      },
-      {
         "type": "R",
         "data": "X",
         "transaction": 1
+      },
+      {
+        "type": "C",
+        "data": null,
+        "transaction": 2
       },
       {
         "type": "W",

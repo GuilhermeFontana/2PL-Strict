@@ -1,68 +1,57 @@
+import inspector from "inspector";
+
 import { createLocksTable, clearLocksTable } from "./resources/locksTable.js";
 import { getTransactions } from "./resources/transactions.js";
 import { verifyLock, verifyUnlockLock } from "./resources/locks.js";
 
-export function createHistory(instructions) {
-  let locksTable = createLocksTable(instructions);
+export async function createHistory(instructions) {
+  // const DELAY = inspector.url() ? 0 : 1500;
+
   let transactions = getTransactions(instructions);
+  let locksTable = createLocksTable(instructions);
 
   let history = [];
-  instructions.forEach((i, index) =>
-    setTimeout(() => {
-      if (i.type === "C") {
-        history = [...history, i];
-        transactions = transactions.map((x) =>
-          x.name !== i.transaction ? x : { name: x.name, commited: true }
-        );
-      } else {
-        switch (verifyLock(i, locksTable, transactions)) {
-          case "S":
+  while (transactions.some((t) => !t.commited)) {
+    instructions
+      .filter((i) => !transactions.filter((t) => t.name === i.transaction)[0].commited)
+      .forEach((i, index) =>
+        // setTimeout(() => {
+        {
+          if (transactions.filter((t) => t.name === i.transaction)[0].blocked.status) return;
+
+          if (i.type === "C") {
             history = [...history, i];
-            break;
-          case "U":
-            locksTable = locksTable.map((x) => (x.data !== i.data ? x : { ...x, type: "E" }));
+            transactions = transactions.map((x) =>
+              x.name !== i.transaction ? x : { name: x.name, commited: true }
+            );
 
-            history = [
-              ...history,
-              {
-                type: "LE",
-                data: i.data,
-                transaction: i.transaction,
-              },
-              i,
-            ];
-            break;
-          case "L":
-            const lockL = locksTable.filter((x) => x.data === i.data)[0];
-            if (!lockL.type)
-              locksTable = locksTable.map((x) =>
-                x.data !== i.data
-                  ? x
-                  : {
-                      data: x.data,
-                      type: i.type === "R" ? "S" : "E",
-                      transactions: [i.transaction],
-                    }
-              );
-            else
-              locksTable = locksTable.map((x) =>
-                x.data !== i.data ? x : { ...x, transactions: [...x.transactions, i.transaction] }
-              );
+            console.log(history);
+            console.log(locksTable);
+            console.log("\n-----------------------\n");
 
-            history = [
-              ...history,
-              {
-                type: i.type === "R" ? "LS" : "LE",
-                data: i.data,
-                transaction: i.transaction,
-              },
-              i,
-            ];
-            break;
-          case "B":
-            const lockB = locksTable.filter((x) => x.data === i.data)[0];
-            if (verifyUnlockLock(i, lockB, transactions) == "L") {
-              if (lockB.type === "E") {
+            return;
+          }
+
+          switch (verifyLock(i, locksTable, transactions)) {
+            case "S":
+              history = [...history, i];
+              break;
+            case "U":
+              locksTable = locksTable.map((x) => (x.data !== i.data ? x : { ...x, type: "E" }));
+
+              history = [
+                ...history,
+                {
+                  type: "LE",
+                  data: i.data,
+                  transaction: i.transaction,
+                },
+                i,
+              ];
+              break;
+            case "L":
+              const lockL = locksTable.filter((x) => x.data === i.data)[0];
+              if (!lockL.type)
                 locksTable = locksTable.map((x) =>
                   x.data !== i.data
                     ? x
@@ -72,80 +61,148 @@ export function createHistory(instructions) {
                         transactions: [i.transaction],
                       }
                 );
+              else
+                locksTable = locksTable.map((x) =>
+                  x.data !== i.data ? x : { ...x, transactions: [...x.transactions, i.transaction] }
+                );
 
-                history = [
-                  ...history,
-                  {
-                    type: "UE",
-                    data: i.data,
-                    transaction: i.transaction,
-                  },
-                  {
-                    type: i.type === "R" ? "LS" : "LE",
-                    data: i.data,
-                    transaction: i.transaction,
-                  },
-                  i,
-                ];
-              } else {
-                if (i.type === "W")
-                  locksTable = [
-                    ...locksTable.filter((x) => x.data !== i.data),
+              history = [
+                ...history,
+                {
+                  type: i.type === "R" ? "LS" : "LE",
+                  data: i.data,
+                  transaction: i.transaction,
+                },
+                i,
+              ];
+              break;
+            case "B":
+              const lockB = locksTable.filter((x) => x.data === i.data)[0];
+              if (verifyUnlockLock(i, lockB, transactions) == "L") {
+                if (lockB.type === "E") {
+                  locksTable = locksTable.map((x) =>
+                    x.data !== i.data
+                      ? x
+                      : {
+                          data: x.data,
+                          type: i.type === "R" ? "S" : "E",
+                          transactions: [i.transaction],
+                        }
+                  );
+
+                  history = [
+                    ...history,
                     {
+                      type: "UE",
                       data: i.data,
-                      type: "E",
-                      transactions: [i.transaction],
+                      transaction: i.transaction,
                     },
-                  ];
-                else
-                  locksTable = [
-                    ...locksTable.filter((x) => x !== i.data),
                     {
-                      ...lockB,
-                      transactions: [
-                        ...lockB.transactions.filter(
-                          (x) => !transactions.filter((t) => t.name === x)[0].commited
-                        ),
-                        i.transaction,
-                      ],
+                      type: i.type === "R" ? "LS" : "LE",
+                      data: i.data,
+                      transaction: i.transaction,
                     },
+                    i,
                   ];
+                } else {
+                  if (i.type === "W")
+                    locksTable = [
+                      ...locksTable.filter((x) => x.data !== i.data),
+                      {
+                        data: i.data,
+                        type: "E",
+                        transactions: [i.transaction],
+                      },
+                    ];
+                  else
+                    locksTable = [
+                      ...locksTable.filter((x) => x !== i.data),
+                      {
+                        ...lockB,
+                        transactions: [
+                          ...lockB.transactions.filter(
+                            (x) => !transactions.filter((t) => t.name === x)[0].commited
+                          ),
+                          i.transaction,
+                        ],
+                      },
+                    ];
 
-                history = [
-                  ...history,
-                  {
-                    type: "US",
-                    data: i.data,
-                    transaction: i.transaction,
-                  },
-                  {
-                    type: i.type === "R" ? "LS" : "LE",
-                    data: i.data,
-                    transaction: i.transaction,
-                  },
-                  i,
-                ];
+                  history = [
+                    ...history,
+                    {
+                      type: "US",
+                      data: i.data,
+                      transaction: i.transaction,
+                    },
+                    {
+                      type: i.type === "R" ? "LS" : "LE",
+                      data: i.data,
+                      transaction: i.transaction,
+                    },
+                    i,
+                  ];
+                }
+              } else {
+                transactions = transactions.map((x) =>
+                  x.name !== i.transaction
+                    ? x
+                    : {
+                        ...x,
+                        blocked: {
+                          status: true,
+                          transactions: lockB.transactions.filter((x) => x !== i.transaction),
+                        },
+                      }
+                );
+
+                history = history.filter((x) => x.transaction !== i.transaction);
+
+                locksTable = locksTable.map((x) => {
+                  if (!x.transactions.some((t) => t === i.transaction)) return x;
+
+                  const aux = x.transactions.filter((t) => t !== i.transaction);
+                  return aux.length
+                    ? { ...x, transactions: aux }
+                    : { data: x.data, type: null, transactions: [] };
+                });
+
+                console.log(
+                  `Deadlock: {data: ${i.data}, type: ${i.type}, transaction: ${i.transaction}}`
+                );
               }
-            } else
-              throw `Deadlock: {data: ${i.data}, type: ${i.type}, transaction: ${i.transaction}`;
 
-            break;
+              break;
+          }
+
+          console.log(history);
+          console.log(locksTable);
+          console.log("\n-----------------------\n");
+          // }, index * DELAY)
         }
-      }
+      );
 
-      console.log(history);
-      console.log(locksTable);
-      console.log("\n-----------------------\n");
-    }, index * 1500)
-  );
-
-  setTimeout(() => {
+    // setTimeout(() => {
     const clr = clearLocksTable(locksTable);
 
     history = [...history, ...clr[0]];
     locksTable = clr[1];
 
-    console.log(history);
-    console.log(locksTable);
-  }, instructions.length * 1500);
+    transactions = transactions.map((x) =>
+      x.commited
+        ? x
+        : {
+            ...x,
+            blocked: {
+              status: false,
+              transactions: [],
+            },
+          }
+    );
+  }
+
+  console.log(history);
+  console.log(locksTable);
+  // console.log(transactions);
+  // }, instructions.length * 1500);
 }

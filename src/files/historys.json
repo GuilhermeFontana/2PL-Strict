@@ -53,5 +53,70 @@
         "transaction": 1
       }
     ]
+  },
+  {
+    "name": "H2",
+    "instructions": [
+      {
+        "type": "R",
+        "data": "Z",
+        "transaction": 2
+      },
+      {
+        "type": "R",
+        "data": "Y",
+        "transaction": 2
+      },
+      {
+        "type": "W",
+        "data": "Y",
+        "transaction": 2
+      },
+      {
+        "type": "R",
+        "data": "X",
+        "transaction": 2
+      },
+      {
+        "type": "R",
+        "data": "X",
+        "transaction": 1
+      },
+      {
+        "type": "R",
+        "data": "Z",
+        "transaction": 1
+      },
+      {
+        "type": "W",
+        "data": "Z",
+        "transaction": 1
+      },
+      {
+        "type": "C",
+        "data": null,
+        "transaction": 2
+      },
+      {
+        "type": "W",
+        "data": "X",
+        "transaction": 1
+      },
+      {
+        "type": "W",
+        "data": "Y",
+        "transaction": 1
+      },
+      {
+        "type": "R",
+        "data": "Z",
+        "transaction": 1
+      },
+      {
+        "type": "C",
+        "data": null,
+        "transaction": 1
+      }
+    ]
   }
 ]

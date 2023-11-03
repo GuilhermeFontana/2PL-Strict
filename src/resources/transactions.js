@@ -6,6 +6,10 @@ export function getTransactions(instructions) {
       return {
         name: x,
         commited: false,
+        blocked: {
+          status: false,
+          transactions: [],
+        },
       };
     });
 }

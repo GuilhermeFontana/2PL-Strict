@@ -15,7 +15,8 @@
       {
         "type": "W",
         "data": "Y",
-        "transaction": 2
+        "transaction": 2,
+        "value": 6
       },
       {
         "type": "R",
@@ -29,18 +30,19 @@
       },
       {
         "type": "C",
-        "data": null,
         "transaction": 2
       },
       {
         "type": "W",
         "data": "X",
-        "transaction": 1
+        "transaction": 1,
+        "value": 2
       },
       {
         "type": "W",
         "data": "Y",
-        "transaction": 1
+        "transaction": 1,
+        "value": 10
       },
       {
         "type": "R",
@@ -49,7 +51,6 @@
       },
       {
         "type": "C",
-        "data": null,
         "transaction": 1
       }
     ]
@@ -70,7 +71,8 @@
       {
         "type": "W",
         "data": "Y",
-        "transaction": 2
+        "transaction": 2,
+        "value": 3
       },
       {
         "type": "R",
@@ -90,7 +92,8 @@
       {
         "type": "W",
         "data": "Z",
-        "transaction": 1
+        "transaction": 1,
+        "value": 45
       },
       {
         "type": "C",
@@ -100,7 +103,8 @@
       {
         "type": "W",
         "data": "X",
-        "transaction": 1
+        "transaction": 1,
+        "value": 8
       },
       {
         "type": "W",

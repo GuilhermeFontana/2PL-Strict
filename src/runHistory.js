@@ -1,14 +1,16 @@
-import inspector from "inspector";
+// import inspector from "inspector";
 
 import { createLocksTable, clearLocksTable } from "./resources/locksTable.js";
 import { getTransactions } from "./resources/transactions.js";
 import { verifyLock, verifyUnlockLock } from "./resources/locks.js";
+import { getDatas, getValue, setValue } from "./resources/datas.js";
 
 export async function createHistory(instructions) {
   // const DELAY = inspector.url() ? 0 : 1500;
 
   let transactions = getTransactions(instructions);
   let locksTable = createLocksTable(instructions);
+  let datasTable = getDatas(instructions);
 
   let history = [];
   while (transactions.some((t) => !t.commited)) {
@@ -25,16 +27,21 @@ export async function createHistory(instructions) {
               x.name !== i.transaction ? x : { name: x.name, commited: true }
             );
 
-            console.log(history);
-            console.log(locksTable);
-            console.log("\n-----------------------\n");
+            // console.log(history);
+            // console.log(locksTable);
+            // console.log("\n-----------------------\n");
 
             return;
           }
 
           switch (verifyLock(i, locksTable, transactions)) {
             case "S":
-              history = [...history, i];
+              if (i.type === "R") history = [...history, { ...i, value: getValue(i, datasTable) }];
+              else {
+                datasTable = setValue(i, datasTable);
+                history = [...history, i];
+              }
+
               break;
             case "U":
               locksTable = locksTable.map((x) => (x.data !== i.data ? x : { ...x, type: "E" }));
@@ -46,8 +53,14 @@ export async function createHistory(instructions) {
                   data: i.data,
                   transaction: i.transaction,
                 },
-                i,
               ];
+
+              if (i.type === "R") history = [...history, { ...i, value: getValue(i, datasTable) }];
+              else {
+                datasTable = setValue(i, datasTable);
+                history = [...history, i];
+              }
+
               break;
             case "L":
               const lockL = locksTable.filter((x) => x.data === i.data)[0];
@@ -73,8 +86,14 @@ export async function createHistory(instructions) {
                   data: i.data,
                   transaction: i.transaction,
                 },
-                i,
               ];
+
+              if (i.type === "R") history = [...history, { ...i, value: getValue(i, datasTable) }];
+              else {
+                datasTable = setValue(i, datasTable);
+                history = [...history, i];
+              }
+
               break;
             case "B":
               const lockB = locksTable.filter((x) => x.data === i.data)[0];
@@ -95,17 +114,43 @@ export async function createHistory(instructions) {
                     {
                       type: "UE",
                       data: i.data,
-                      transaction: i.transaction,
+                      transaction: lockB.transactions[0],
                     },
                     {
                       type: i.type === "R" ? "LS" : "LE",
                       data: i.data,
                       transaction: i.transaction,
                     },
-                    i,
                   ];
+
+                  if (i.type === "R")
+                    history = [...history, { ...i, value: getValue(i, datasTable) }];
+                  else {
+                    datasTable = setValue(i, datasTable);
+                    history = [...history, i];
+                  }
                 } else {
-                  if (i.type === "W")
+                  lockB.transactions.forEach((x) => {
+                    history = [
+                      ...history,
+                      {
+                        type: "US",
+                        data: i.data,
+                        transaction: x,
+                      },
+                    ];
+                  });
+
+                  history = [
+                    ...history,
+                    {
+                      type: i.type === "R" ? "LS" : "LE",
+                      data: i.data,
+                      transaction: i.transaction,
+                    },
+                  ];
+
+                  if (i.type === "W") {
                     locksTable = [
                       ...locksTable.filter((x) => x.data !== i.data),
                       {
@@ -114,7 +159,9 @@ export async function createHistory(instructions) {
                         transactions: [i.transaction],
                       },
                     ];
-                  else
+
+                    history = [...history, { ...i, value: getValue(i, datasTable) }];
+                  } else
                     locksTable = [
                       ...locksTable.filter((x) => x !== i.data),
                       {
@@ -128,20 +175,8 @@ export async function createHistory(instructions) {
                       },
                     ];
 
-                  history = [
-                    ...history,
-                    {
-                      type: "US",
-                      data: i.data,
-                      transaction: i.transaction,
-                    },
-                    {
-                      type: i.type === "R" ? "LS" : "LE",
-                      data: i.data,
-                      transaction: i.transaction,
-                    },
-                    i,
-                  ];
+                  datasTable = setValue(i, datasTable);
+                  history = [...history, i];
                 }
               } else {
                 transactions = transactions.map((x) =>
@@ -175,9 +210,9 @@ export async function createHistory(instructions) {
               break;
           }
 
-          console.log(history);
-          console.log(locksTable);
-          console.log("\n-----------------------\n");
+          // console.log(history);
+          // console.log(locksTable);
+          // console.log("\n-----------------------\n");
           // }, index * DELAY)
         }
       );
@@ -201,8 +236,14 @@ export async function createHistory(instructions) {
     );
   }
 
+  console.log(instructions);
   console.log(history);
   console.log(locksTable);
+  console.log(
+    datasTable.map((x) => {
+      return { ...x, history: JSON.stringify(x.history) };
+    })
+  );
   // console.log(transactions);
   // }, instructions.length * 1500);
 }

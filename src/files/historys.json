@@ -109,7 +109,8 @@
       {
         "type": "W",
         "data": "Y",
-        "transaction": 1
+        "transaction": 1,
+        "value": 11
       },
       {
         "type": "R",
@@ -119,6 +120,79 @@
       {
         "type": "C",
         "data": null,
+        "transaction": 1
+      }
+    ]
+  },
+  {
+    "name": "H3",
+    "instructions": [
+      {
+        "type": "W",
+        "data": "A",
+        "transaction": 2,
+        "value": 5
+      },
+      {
+        "type": "W",
+        "data": "B",
+        "transaction": 2,
+        "value": 5
+      },
+      {
+        "type": "W",
+        "data": "C",
+        "transaction": 2,
+        "value": 5
+      },
+      {
+        "type": "W",
+        "data": "D",
+        "transaction": 2,
+        "value": 5
+      },
+      {
+        "type": "W",
+        "data": "A",
+        "transaction": 2,
+        "value": 2
+      },
+      {
+        "type": "W",
+        "data": "B",
+        "transaction": 2,
+        "value": 3
+      },
+      {
+        "type": "W",
+        "data": "C",
+        "transaction": 2,
+        "value": 9
+      },
+      {
+        "type": "W",
+        "data": "A",
+        "transaction": 2,
+        "value": 7
+      },
+      {
+        "type": "W",
+        "data": "E",
+        "transaction": 1,
+        "value": 99
+      },
+      {
+        "type": "W",
+        "data": "E",
+        "transaction": 2,
+        "value": 47
+      },
+      {
+        "type": "C",
+        "transaction": 2
+      },
+      {
+        "type": "C",
         "transaction": 1
       }
     ]

@@ -205,6 +205,15 @@ export async function createHistory(instructions) {
                 console.log(
                   `Deadlock: {data: ${i.data}, type: ${i.type}, transaction: ${i.transaction}}`
                 );
+
+                datasTable = datasTable.map((x) => {
+                  const newHistory = x.history.filter((x) => x.transaction !== i.transaction);
+                  return {
+                    name: x.name,
+                    value: newHistory[0].newValue,
+                    history: newHistory,
+                  };
+                });
               }
 
               break;
@@ -212,6 +221,12 @@ export async function createHistory(instructions) {
 
           // console.log(history);
           // console.log(locksTable);
+          // console.log(i);
+          // console.log(
+          //   datasTable.map((x) => {
+          //     return { ...x, history: JSON.stringify(x.history) };
+          //   })
+          // );
           // console.log("\n-----------------------\n");
           // }, index * DELAY)
         }

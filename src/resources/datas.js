@@ -8,7 +8,7 @@ export function getDatas(instructions) {
       return {
         name: x,
         value,
-        history: [],
+        history: [{ newValue: value, transaction: 0 }],
       };
     });
 }
@@ -24,7 +24,7 @@ export function setValue(instruction, datasTable) {
       : {
           name: x.name,
           value: instruction.value,
-          history: [{ oldValue: x.value, transaction: instruction.transaction }, ...x.history],
+          history: [{ newValue: x.value, transaction: instruction.transaction }, ...x.history],
         }
   );
 }

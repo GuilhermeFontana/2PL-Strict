@@ -217,7 +217,7 @@ Os bloqueios só são liberados após a finalização (commit) da transação qu
     <a href="https://developer.mozilla.org/pt-BR/docs/Web/JavaScript" target="_blank" rel="noreferrer"> 
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/JavaScript-logo.png/800px-JavaScript-logo.png" alt="js-logo" width="50" height="50"/> 
     </a >
-    <a href="https://api.arcade.academy/en/latest/" target="_blank" rel="noreferrer"> 
+    <a href="https://nodejs.org/en" target="_blank" rel="noreferrer"> 
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/2560px-Node.js_logo.svg.png" alt="Python Arcade" width="75" height="50"/> 
     </a>
 </p>

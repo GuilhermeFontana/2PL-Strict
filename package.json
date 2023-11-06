@@ -5,16 +5,19 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node ./index,js"
+    "run": "node ./index.js"
   },
   "repository": {
     "type": "git",
-    "url": "None"
+    "url": "https://github.com/GuilhermeFontana/2PL-Strict"
   },
   "keywords": [
     "DataBase",
     "Simulator"
   ],
   "author": "Guilherme Fontana",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "prompt-sync": "^4.2.0"
+  }
 }

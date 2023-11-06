@@ -1,9 +1,10 @@
+import ps from "prompt-sync";
+const prompt = ps();
+
 import data from "./src/files/historys.json" assert { type: "json" };
 import { createHistory } from "./src/runHistory.js";
 
-createHistory(data[0].instructions);
+const input = Number(prompt(`Escolha uma história (1-${data.length}): `));
 
-console.log("=====================================================================");
-
-createHistory(data[1].instructions);
-// console.log(history);
+if (input < 1 || input > data.length) console.log("Opção inválida");
+else createHistory(data[input - 1].instructions);

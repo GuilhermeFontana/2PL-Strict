@@ -271,5 +271,92 @@
         "transaction": 1
       }
     ]
+  },
+  {
+    "name": "H4",
+    "instructions": [
+      {
+        "type": "R",
+        "data": "A",
+        "transaction": 1
+      },
+      {
+        "type": "R",
+        "data": "B",
+        "transaction": 1
+      },
+      {
+        "type": "R",
+        "data": "C",
+        "transaction": 2
+      },
+      {
+        "type": "R",
+        "data": "C",
+        "transaction": 1
+      },
+      {
+        "type": "W",
+        "data": "A",
+        "transaction": 1,
+        "value": 66
+      },
+      {
+        "type": "W",
+        "data": "F",
+        "transaction": 3,
+        "value": 7
+      },
+      {
+        "type": "R",
+        "data": "B",
+        "transaction": 2
+      },
+      {
+        "type": "C",
+        "transaction": 1
+      },
+      {
+        "type": "R",
+        "data": "A",
+        "transaction": 2
+      },
+      {
+        "type": "W",
+        "data": "A",
+        "transaction": 2,
+        "value": 33
+      },
+      {
+        "type": "R",
+        "data": "B",
+        "transaction": 3
+      },
+      {
+        "type": "C",
+        "transaction": 2
+      },
+      {
+        "type": "R",
+        "data": "A",
+        "transaction": 3
+      },
+      {
+        "type": "2",
+        "data": "A",
+        "transaction": 3,
+        "value": 23
+      },
+      {
+        "type": "2",
+        "data": "B",
+        "transaction": 3,
+        "value": 100
+      },
+      {
+        "type": "C",
+        "transaction": 3
+      }
+    ]
   }
 ]

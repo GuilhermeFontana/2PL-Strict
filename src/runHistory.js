@@ -28,6 +28,7 @@ export async function createHistory(instructions) {
         );
         print(history, locksTable, datasTable, true);
 
+        await sleep(DELAY);
         continue;
       }
 

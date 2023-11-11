@@ -64,6 +64,8 @@ Caso a instrução atual for uma escrita, em um dado que esteja bloqueado de man
 
 Os bloqueios só são liberados após a finalização (commit) da transação que os bloqueia.
 
+As liberação vão ocorrer sob demanda, no momento em que uma outra transação solicitar o dado disponível para ser liberado. Se isto não ocorrer, todas as liberações serão realizadas após a execução atual da história.
+
 ## Estruturas
 
 ### 📄 Arquivo de entradas ( _historys.json_ ):
